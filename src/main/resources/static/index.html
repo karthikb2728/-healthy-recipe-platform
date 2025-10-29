@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthy Recipe Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-utensils"></i>
+                <span>Healthy Recipes</span>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link active" data-section="home">🏠 Home</a>
+                <a href="#recipes" class="nav-link" data-section="recipes">🍳 Recipes</a>
+                <a href="#create" class="nav-link" data-section="create" style="display: none;">➕ Create Recipe</a>
+                <a href="#favorites" class="nav-link" data-section="favorites" style="display: none;">❤️ Favorites</a>
+                <a href="#profile" class="nav-link" data-section="profile" style="display: none;">👤 Profile</a>
+                <a href="#admin" class="nav-link" data-section="admin" style="display: none;">⚙️ Admin Panel</a>
+            </div>
+            
+            <div class="nav-auth">
+                <button class="btn-primary" id="loginBtn">Login</button>
+                <button class="btn-secondary" id="registerBtn">Register</button>
+                <button class="btn-danger" id="logoutBtn" style="display: none;">Logout</button>
+                <span class="user-greeting" id="userGreeting" style="display: none; margin-right: 1rem; color: var(--primary-color); font-weight: 500;"></span>
+            </div>
+            
+            <div class="hamburger" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Discover Healthy Recipes</h1>
+                    <p>Find personalized recipe recommendations based on your dietary preferences and health goals</p>
+                    <form class="search-container" id="heroSearch">
+                        <input type="text" id="heroSearchInput" name="search" placeholder="Search for delicious recipes...">
+                        <button class="btn-primary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-heart"></i>
+                    <h3>Personalized</h3>
+                    <p>Get recommendations based on your dietary preferences</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-star"></i>
+                    <h3>Rated</h3>
+                    <p>Community-rated recipes with reviews</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-leaf"></i>
+                    <h3>Healthy</h3>
+                    <p>Nutritious recipes for your wellness journey</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recipes Section -->
+        <section id="recipes" class="section">
+            <div class="section-header">
+                <h2>Browse Recipes</h2>
+                <div class="filters">
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="BREAKFAST">Breakfast</option>
+                        <option value="LUNCH">Lunch</option>
+                        <option value="DINNER">Dinner</option>
+                        <option value="SNACK">Snack</option>
+                        <option value="DESSERT">Dessert</option>
+                    </select>
+                    <select id="difficultyFilter">
+                        <option value="">All Levels</option>
+                        <option value="EASY">Easy</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HARD">Hard</option>
+                    </select>
+                    <select id="sortFilter">
+                        <option value="">Sort by...</option>
+                        <option value="rating">Highest Rated</option>
+                        <option value="time">Cooking Time</option>
+                        <option value="newest">Newest</option>
+                        <option value="name">Name</option>
+                    </select>
+                    <button class="btn-success" onclick="applyFilters()">Apply Filters</button>
+                </div>
+            </div>
+            
+            <div class="loading" id="recipes-loading" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i> Loading recipes...
+            </div>
+            
+            <div class="recipes-grid" id="recipesGrid">
+                <!-- Recipes will be loaded here -->
+            </div>
+            
+            <div class="pagination" id="recipes-pagination">
+                <!-- Pagination will be added here -->
+            </div>
+        </section>
+
+        <!-- Favorites Section -->
+        <section id="favorites" class="section">
+            <div class="section-header">
+                <h2>My Favorite Recipes</h2>
+            </div>
+            
+            <div class="loading" id="favorites-loading" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i> Loading favorites...
+            </div>
+            
+            <div class="recipes-grid" id="favoritesGrid">
+                <!-- Favorite recipes will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Create Recipe Section -->
+        <section id="create" class="section">
+            <div class="section-header">
+                <h2>Create New Recipe</h2>
+                <p>Share your culinary creativity with the community</p>
+            </div>
+            
+            <div class="create-recipe-container">
+                <form id="createRecipeForm" class="recipe-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="recipe-title">Recipe Title *</label>
+                            <input type="text" id="recipe-title" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipe-category">Category *</label>
+                            <select id="recipe-category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="BREAKFAST">🌅 Breakfast</option>
+                                <option value="LUNCH">🌞 Lunch</option>
+                                <option value="DINNER">🌙 Dinner</option>
+                                <option value="SNACK">🍿 Snack</option>
+                                <option value="DESSERT">🍰 Dessert</option>
+                                <option value="APPETIZER">🥗 Appetizer</option>
+                                <option value="BEVERAGE">🥤 Beverage</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recipe-description">Description *</label>
+                        <textarea id="recipe-description" name="description" rows="3" required placeholder="Describe your delicious recipe..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="recipe-prepTime">Prep Time (minutes)</label>
+                            <input type="number" id="recipe-prepTime" name="preparationTime" min="1" max="1440">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipe-cookTime">Cook Time (minutes)</label>
+                            <input type="number" id="recipe-cookTime" name="cookingTime" min="1" max="1440">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipe-servings">Servings</label>
+                            <input type="number" id="recipe-servings" name="servings" min="1" max="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipe-difficulty">Difficulty</label>
+                            <select id="recipe-difficulty" name="difficultyLevel">
+                                <option value="EASY">😊 Easy</option>
+                                <option value="MEDIUM">😐 Medium</option>
+                                <option value="HARD">😤 Hard</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recipe-ingredients">Ingredients *</label>
+                        <div id="ingredients-container">
+                            <div class="ingredient-row">
+                                <input type="text" placeholder="Ingredient name" name="ingredientName[]" required>
+                                <input type="number" placeholder="Quantity" name="ingredientQuantity[]" step="0.1" min="0">
+                                <input type="text" placeholder="Unit (e.g., cups, tsp)" name="ingredientUnit[]">
+                                <button type="button" class="btn-danger btn-sm remove-ingredient" style="display: none;">Remove</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-secondary" id="add-ingredient">Add Ingredient</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recipe-instructions">Instructions *</label>
+                        <textarea id="recipe-instructions" name="instructions" rows="6" required placeholder="Step-by-step cooking instructions..."></textarea>
+                    </div>
+                    
+                    <div class="nutrition-section">
+                        <h3>Nutritional Information (Optional)</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="recipe-calories">Calories</label>
+                                <input type="number" id="recipe-calories" name="calories" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="recipe-protein">Protein (g)</label>
+                                <input type="number" id="recipe-protein" name="protein" step="0.1" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="recipe-carbs">Carbs (g)</label>
+                                <input type="number" id="recipe-carbs" name="carbohydrates" step="0.1" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="recipe-fat">Fat (g)</label>
+                                <input type="number" id="recipe-fat" name="fat" step="0.1" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-success">🚀 Publish Recipe</button>
+                        <button type="button" class="btn-secondary" onclick="resetForm()">🔄 Reset Form</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile" class="section">
+            <div class="section-header">
+                <h2>My Profile</h2>
+                <div class="profile-role-badge" id="profileRoleBadge"></div>
+            </div>
+            
+            <div class="profile-container">
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <h3 id="recipesCount">0</h3>
+                        <p>Recipes Created</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="favoritesCount">0</h3>
+                        <p>Favorite Recipes</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="ratingsCount">0</h3>
+                        <p>Reviews Given</p>
+                    </div>
+                </div>
+                
+                <div class="profile-form">
+                    <form id="profileForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="profile-firstName">First Name</label>
+                                <input type="text" id="profile-firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-lastName">Last Name</label>
+                                <input type="text" id="profile-lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="profile-email">Email</label>
+                            <input type="email" id="profile-email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="profile-bio">Bio</label>
+                            <textarea id="profile-bio" name="bio" rows="3" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="profile-fitnessGoal">Fitness Goal</label>
+                                <select id="profile-fitnessGoal" name="fitnessGoal">
+                                    <option value="">Select Goal</option>
+                                    <option value="WEIGHT_LOSS">🎯 Weight Loss</option>
+                                    <option value="WEIGHT_GAIN">💪 Weight Gain</option>
+                                    <option value="MUSCLE_GAIN">🏋️ Muscle Gain</option>
+                                    <option value="MAINTAIN_WEIGHT">⚖️ Maintain Weight</option>
+                                    <option value="GENERAL_HEALTH">🌟 General Health</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-calorieTarget">Daily Calorie Target</label>
+                                <input type="number" id="profile-calorieTarget" name="dailyCalorieTarget" min="1000" max="5000">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Section -->
+        <section id="admin" class="section">
+            <div class="section-header">
+                <h2>⚙️ Admin Control Panel</h2>
+                <div class="admin-stats">
+                    <div class="admin-stat">
+                        <span class="stat-number" id="totalUsers">0</span>
+                        <span class="stat-label">Total Users</span>
+                    </div>
+                    <div class="admin-stat">
+                        <span class="stat-number" id="totalRecipes">0</span>
+                        <span class="stat-label">Total Recipes</span>
+                    </div>
+                    <div class="admin-stat">
+                        <span class="stat-number" id="pendingRecipes">0</span>
+                        <span class="stat-label">Pending Approval</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-tabs">
+                <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+                <button class="tab-btn" data-tab="pending-recipes">⏳ Pending Recipes</button>
+                <button class="tab-btn" data-tab="all-recipes">🍳 All Recipes</button>
+                <button class="tab-btn" data-tab="users">👥 User Management</button>
+                <button class="tab-btn" data-tab="system">🔧 System Settings</button>
+            </div>
+            
+            <div class="tab-content">
+                <!-- Dashboard Tab -->
+                <div id="dashboard" class="tab-pane active">
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <h3>📈 Platform Statistics</h3>
+                            <div class="stats-list">
+                                <div class="stat-item">
+                                    <span>Active Users (24h)</span>
+                                    <span id="activeUsers">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>New Recipes (7d)</span>
+                                    <span id="newRecipes">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Reviews (7d)</span>
+                                    <span id="newReviews">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Chef Applications</span>
+                                    <span id="chefApplications">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <h3>⚡ Quick Actions</h3>
+                            <div class="quick-actions">
+                                <button class="btn-primary" onclick="showAllPendingRecipes()">Review Pending Recipes</button>
+                                <button class="btn-secondary" onclick="generateReport()">Generate Report</button>
+                                <button class="btn-warning" onclick="broadcastMessage()">Send Announcement</button>
+                                <button class="btn-danger" onclick="showSystemMaintenance()">System Maintenance</button>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <h3>🚨 Recent Activities</h3>
+                            <div class="activity-feed" id="activityFeed">
+                                <!-- Activity feed will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pending Recipes Tab -->
+                <div id="pending-recipes" class="tab-pane">
+                    <div class="section-actions">
+                        <button class="btn-success" onclick="approveAllSelected()">✅ Approve Selected</button>
+                        <button class="btn-danger" onclick="rejectAllSelected()">❌ Reject Selected</button>
+                        <button class="btn-secondary" onclick="refreshPendingRecipes()">🔄 Refresh</button>
+                    </div>
+                    
+                    <div class="loading" id="pending-loading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading pending recipes...
+                    </div>
+                    
+                    <div class="admin-recipes-grid" id="pendingRecipesGrid">
+                        <!-- Pending recipes will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- All Recipes Tab -->
+                <div id="all-recipes" class="tab-pane">
+                    <div class="section-actions">
+                        <div class="admin-filters">
+                            <select id="recipeStatusFilter">
+                                <option value="">All Status</option>
+                                <option value="APPROVED">✅ Approved</option>
+                                <option value="PENDING">⏳ Pending</option>
+                                <option value="REJECTED">❌ Rejected</option>
+                            </select>
+                            <select id="recipeAuthorFilter">
+                                <option value="">All Authors</option>
+                                <option value="USER">👤 Users</option>
+                                <option value="CHEF">👨‍🍳 Chefs</option>
+                            </select>
+                            <button class="btn-primary" onclick="applyRecipeFilters()">Apply Filters</button>
+                        </div>
+                        <button class="btn-danger" onclick="bulkDeleteRecipes()">🗑️ Bulk Delete</button>
+                    </div>
+                    
+                    <div class="loading" id="recipes-loading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading recipes...
+                    </div>
+                    
+                    <div class="admin-recipes-table" id="allRecipesTable">
+                        <!-- All recipes table will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Users Management Tab -->
+                <div id="users" class="tab-pane">
+                    <div class="section-actions">
+                        <div class="admin-filters">
+                            <select id="userRoleFilter">
+                                <option value="">All Roles</option>
+                                <option value="USER">👤 Users</option>
+                                <option value="CHEF">👨‍🍳 Chefs</option>
+                                <option value="ADMIN">⚙️ Admins</option>
+                            </select>
+                            <select id="userStatusFilter">
+                                <option value="">All Status</option>
+                                <option value="ACTIVE">✅ Active</option>
+                                <option value="INACTIVE">⏸️ Inactive</option>
+                                <option value="SUSPENDED">🚫 Suspended</option>
+                            </select>
+                            <button class="btn-primary" onclick="applyUserFilters()">Apply Filters</button>
+                        </div>
+                        <button class="btn-success" onclick="createNewUser()">➕ Create User</button>
+                    </div>
+                    
+                    <div class="loading" id="users-loading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading users...
+                    </div>
+                    
+                    <div class="users-table-container">
+                        <table class="users-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAllUsers"></th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- System Settings Tab -->
+                <div id="system" class="tab-pane">
+                    <div class="system-settings">
+                        <div class="settings-section">
+                            <h3>🔐 Security Settings</h3>
+                            <div class="setting-item">
+                                <label for="enableTwoFactor">Enable Two-Factor Authentication</label>
+                                <input type="checkbox" id="enableTwoFactor">
+                            </div>
+                            <div class="setting-item">
+                                <label for="sessionTimeout">Session Timeout (minutes)</label>
+                                <input type="number" id="sessionTimeout" value="30" min="5" max="1440">
+                            </div>
+                            <div class="setting-item">
+                                <label for="maxLoginAttempts">Max Login Attempts</label>
+                                <input type="number" id="maxLoginAttempts" value="3" min="1" max="10">
+                            </div>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h3>📧 Notification Settings</h3>
+                            <div class="setting-item">
+                                <label for="emailNotifications">Email Notifications</label>
+                                <input type="checkbox" id="emailNotifications" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="newRecipeNotifications">New Recipe Notifications</label>
+                                <input type="checkbox" id="newRecipeNotifications" checked>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h3>🎨 Platform Settings</h3>
+                            <div class="setting-item">
+                                <label for="allowUserRegistration">Allow User Registration</label>
+                                <input type="checkbox" id="allowUserRegistration" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="requireRecipeApproval">Require Recipe Approval</label>
+                                <input type="checkbox" id="requireRecipeApproval" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="maintenanceMode">Maintenance Mode</label>
+                                <input type="checkbox" id="maintenanceMode">
+                            </div>
+                        </div>
+                        
+                        <div class="settings-actions">
+                            <button class="btn-success" onclick="saveSystemSettings()">💾 Save All Settings</button>
+                            <button class="btn-warning" onclick="resetToDefaults()">🔄 Reset to Defaults</button>
+                            <button class="btn-danger" onclick="exportSystemData()">📤 Export System Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Welcome Back!</h3>
+                <span class="close" data-modal="loginModal">&times;</span>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" required>
+                </div>
+                <button type="submit" class="btn-primary btn-full">Login</button>
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="#" id="switchToRegister">Sign up here</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Join Our Community!</h3>
+                <span class="close" data-modal="registerModal">&times;</span>
+            </div>
+            <form id="registerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="register-firstName">First Name</label>
+                        <input type="text" id="register-firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-lastName">Last Name</label>
+                        <input type="text" id="register-lastName" name="lastName" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirmPassword">Confirm Password</label>
+                    <input type="password" id="register-confirmPassword" name="confirmPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-role">Account Type</label>
+                    <select id="register-role" name="role" required>
+                        <option value="USER">Food Enthusiast</option>
+                        <option value="CHEF">Professional Chef</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary btn-full">Create Account</button>
+                <div class="form-footer">
+                    <p>Already have an account? <a href="#" id="switchToLogin">Sign in here</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Recipe Details Modal -->
+    <div id="recipe-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="recipe-title">Recipe Title</h3>
+                <span class="close" data-modal="recipe-modal">&times;</span>
+            </div>
+            <div class="recipe-details" id="recipe-details">
+                <!-- Recipe details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="message-container" class="message-container">
+        <!-- Messages will be shown here -->
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
